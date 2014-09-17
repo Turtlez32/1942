@@ -145,6 +145,7 @@ namespace _1942
                 {
                     position.Y = SB.GraphicsDevice.Viewport.Height / 2;
                     position.X = SB.GraphicsDevice.Viewport.Width / 2;
+                    Game1.playerLives--;
                     isDead = false;
                 }
                 else

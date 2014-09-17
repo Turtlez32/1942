@@ -1,5 +1,6 @@
 ﻿#region Using Statements
 using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -8,6 +9,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Audio;
+using System.Xml;
+using System.Xml.Linq;
 #endregion
 
 namespace _1942
@@ -20,8 +23,12 @@ namespace _1942
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont font;
+        Texture2D hud;
+        Texture2D lives;
+        public int levelCount;
         private Texture2D playerPlane;
         public static Player player = null;
+        public static int playerLives = 3;
         Tile[,] tileArray = null;
         List<Enemy> enemyList = new List<Enemy>();
         Random random = new Random();
@@ -31,6 +38,9 @@ namespace _1942
         public static Bullet[] bullets = new Bullet[50];
         float scrollSpeed = 64.0f;
         int scrollMax = 0;
+
+        public string firstPlaceName;
+        public int firstPlaceScore;
 
         public static GameState gameState = GameState.SPLASH;
 
@@ -94,6 +104,8 @@ namespace _1942
             LoadTileContent();
             SpawnEnemy();
 
+            lives = Content.Load<Texture2D>("HUD/lives.png");
+            hud = Content.Load<Texture2D>("HUD/HUD.png");
             font = Content.Load<SpriteFont>("CopperplateGothicBold");
             splashBackground = Content.Load<Texture2D>("Menu.png");
         }
@@ -135,7 +147,7 @@ namespace _1942
 
             player.Position = new Vector2(
                 graphics.GraphicsDevice.Viewport.Width / 2,
-                graphics.GraphicsDevice.Viewport.Height - 50);
+                graphics.GraphicsDevice.Viewport.Height - 150);
 
             player.ShootFX = Content.Load<SoundEffect>("playerPew");
         }
@@ -260,6 +272,26 @@ namespace _1942
                     enemy.Draw(spriteBatch);
             }
 
+            spriteBatch.Draw(hud, new Vector2(0, 630), Color.White);
+            spriteBatch.DrawString(font, "Level : " + levelCount, new Vector2(100, 650), Color.White);
+            spriteBatch.DrawString(font, "Lives: ", new Vector2(290, 645), Color.White);
+
+            if (playerLives == 3)
+            {
+                spriteBatch.Draw(lives, new Vector2(365, 650), Color.White);
+                spriteBatch.Draw(lives, new Vector2(400, 650), Color.White);
+                spriteBatch.Draw(lives, new Vector2(435, 650), Color.White);
+            }
+            else if (playerLives == 2)
+            {
+                spriteBatch.Draw(lives, new Vector2(400, 650), Color.White);
+                spriteBatch.Draw(lives, new Vector2(435, 650), Color.White);
+            }
+            else if (playerLives == 1)
+            {
+                spriteBatch.Draw(lives, new Vector2(435, 650), Color.White);
+            }
+
             spriteBatch.DrawString(font, "1 UP", new Vector2(20, 10), Color.White);
             spriteBatch.DrawString(font, "Score: " + player.Score, new Vector2(20, 650), Color.White);
 
@@ -309,6 +341,7 @@ namespace _1942
         
         public void DrawHighScore()
         {
+           
         }
 
         public void SpawnTimerTest(float deltaTime)
@@ -364,7 +397,18 @@ namespace _1942
 
         public void DrawGameOver()
         {
+            spriteBatch.DrawString(font, "First Place Name:" + firstPlaceName + " High Score: " + firstPlaceScore, new Vector2(100, 100), Color.Black);
+        }
+
+        public void HighScoreList()
+        {
+            string message = new StreamReader("HighScore.csv").ReadToEnd();
+
+            string[] spliter = message.Split(new char[] { ',' });
+
+
             
+
         }
 
     }
