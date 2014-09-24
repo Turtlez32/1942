@@ -3,12 +3,14 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Audio;
+
 using System.Xml;
 using System.Xml.Linq;
 #endregion
@@ -34,6 +36,8 @@ namespace _1942
         Random random = new Random();
         private Texture2D splashBackground;
 
+        Song bgm;
+
         float spawnTimer = 2;
         public static Bullet[] bullets = new Bullet[50];
         float scrollSpeed = 64.0f;
@@ -41,6 +45,10 @@ namespace _1942
 
         public string firstPlaceName;
         public int firstPlaceScore;
+        public string secondPlaceName;
+        public int secondPlaceScore;
+        public string thirdPlaceName;
+        public int thirdPlaceScore;
 
         public static GameState gameState = GameState.SPLASH;
 
@@ -103,6 +111,7 @@ namespace _1942
             LoadBulletContent();
             LoadTileContent();
             SpawnEnemy();
+            GetHighScoreData();
 
             lives = Content.Load<Texture2D>("HUD/lives.png");
             hud = Content.Load<Texture2D>("HUD/HUD.png");
@@ -198,7 +207,7 @@ namespace _1942
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            SetHighScoreData();
         }
 
         /// <summary>
@@ -273,7 +282,7 @@ namespace _1942
             }
 
             spriteBatch.Draw(hud, new Vector2(0, 630), Color.White);
-            spriteBatch.DrawString(font, "Level : " + levelCount, new Vector2(100, 650), Color.White);
+            /*spriteBatch.DrawString(font, "Level : " + levelCount, new Vector2(100, 650), Color.White);*/
             spriteBatch.DrawString(font, "Lives: ", new Vector2(290, 645), Color.White);
 
             if (playerLives == 3)
@@ -293,7 +302,7 @@ namespace _1942
             }
 
             spriteBatch.DrawString(font, "1 UP", new Vector2(20, 10), Color.White);
-            spriteBatch.DrawString(font, "Score: " + player.Score, new Vector2(20, 650), Color.White);
+            spriteBatch.DrawString(font, "Score: " + Game1.player.Score, new Vector2(20, 650), Color.White);
 
             UpdateGame(gameTime);
         }
@@ -397,18 +406,105 @@ namespace _1942
 
         public void DrawGameOver()
         {
-            spriteBatch.DrawString(font, "First Place Name:" + firstPlaceName + " High Score: " + firstPlaceScore, new Vector2(100, 100), Color.Black);
+            spriteBatch.DrawString(font, "First Place Name:  " + firstPlaceName, new Vector2(100, 100), Color.Black);
+            spriteBatch.DrawString(font, "First Place Score: " + firstPlaceScore, new Vector2(100, 130), Color.Black);
+            spriteBatch.DrawString(font, "First Place Name:  " + secondPlaceName, new Vector2(100, 160), Color.Black);
+            spriteBatch.DrawString(font, "First Place Score: " + secondPlaceScore, new Vector2(100, 190), Color.Black);
+            spriteBatch.DrawString(font, "First Place Name:  " + thirdPlaceName, new Vector2(100, 220), Color.Black);
+            spriteBatch.DrawString(font, "First Place Score: " + thirdPlaceScore, new Vector2(100, 250), Color.Black);
+
+            CheckHighScores();
         }
 
-        public void HighScoreList()
+        public void GetHighScoreData()
         {
-            string message = new StreamReader("HighScore.csv").ReadToEnd();
+            int i = 0;
+            string line;
+            string[] input = new string[3];
 
-            string[] spliter = message.Split(new char[] { ',' });
+            StreamReader file = new StreamReader("./Content/HighScore.txt");
+
+            while ((line = file.ReadLine()) != null)
+            {
+                if (i == 0)
+                {
+                    input = line.Split(' ');
+                    firstPlaceName = input[0].ToString();
+                    firstPlaceScore = int.Parse(input[1].ToString());                    
+                }
+
+                if (i == 1)
+                {
+                    input = line.Split(' ');
+                    secondPlaceName = input[0].ToString();
+                    secondPlaceScore = int.Parse(input[1].ToString()); 
+                }
+
+                if (i == 2)
+                {
+                    input = line.Split(' ');
+                    thirdPlaceName = input[0].ToString();
+                    thirdPlaceScore = int.Parse(input[1].ToString()); 
+                }
+
+                i++;
+            }
+
+            file.Close();
+        }
+
+        public void SetHighScoreData()
+        {
+            string[] lines = new string[6];
+            TextWriter tw = new StreamWriter(@"./Content/HighScore.txt");
+
+            /* check for the players score before saving the file. */
+            CheckHighScores();
+
+            for (int i = 0; i < 3; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        tw.Write(firstPlaceName);
+                        tw.Write(" ");
+                        tw.WriteLine(firstPlaceScore);
+                        break;
+                    case 1: 
+                        tw.Write(secondPlaceName);
+                        tw.Write(" ");
+                        tw.WriteLine(secondPlaceScore);
+                        break;
+                    case 2: 
+                        tw.Write(thirdPlaceName);
+                        tw.Write(" ");
+                        tw.WriteLine(thirdPlaceScore);
+                        break;
+                }
+            }
+
+            tw.Close();
 
 
+        }
+
+        public void CheckHighScores()
+        {
+            if (Game1.player.Score > firstPlaceScore)
+            {
+                firstPlaceScore = Game1.player.Score;
+            }
+
+            if (Game1.player.Score > secondPlaceScore)
+            {
+                secondPlaceScore = Game1.player.Score;
+            }
+
+            if (Game1.player.Score > thirdPlaceScore)
+            {
+                thirdPlaceScore = Game1.player.Score;
+            }
             
-
         }
 
     }

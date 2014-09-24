@@ -91,7 +91,7 @@ namespace _1942
            
             if (IsDead == true)
             {
-                Game1.player.Score = 1;
+                Game1.player.Score = 200;
                 return;
             }
 
@@ -119,7 +119,7 @@ namespace _1942
                     if (b.IsDead == false && b.isFromPlayer == true && bounds.Intersects(b.Bounds) == true)
                     {
                         b.IsDead = true;
-                        Game1.player.Score = 1;
+                        Game1.player.Score = 200;
                         return true;
                     }
                 } 

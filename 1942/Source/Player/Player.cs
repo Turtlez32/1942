@@ -25,7 +25,7 @@ namespace _1942
         public int lives = 3;
         public int maxHealth;
         protected SoundEffect shootFX;
-        protected int score;
+        protected int score = 0;
 
         /* set the timer between each bullet */
         protected float coolDownTimer = 0;
