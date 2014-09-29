@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.GamerServices;
 
 using System.Xml;
 using System.Xml.Linq;
+using SimpleAnimation;
 #endregion
 
 namespace _1942
@@ -23,7 +24,7 @@ namespace _1942
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public static SpriteBatch spriteBatch;
         SpriteFont font;
         Texture2D hud;
         Texture2D lives;
@@ -36,7 +37,9 @@ namespace _1942
         Random random = new Random();
         private Texture2D splashBackground;
 
-        Song bgm;
+        public static SoundEffect explosion;
+        SoundEffect select;
+        SoundEffect start;
 
         float spawnTimer = 2;
         public static Bullet[] bullets = new Bullet[50];
@@ -49,6 +52,7 @@ namespace _1942
         public int secondPlaceScore;
         public string thirdPlaceName;
         public int thirdPlaceScore;
+        public Texture2D sTexture;
 
         public static GameState gameState = GameState.SPLASH;
 
@@ -117,6 +121,9 @@ namespace _1942
             hud = Content.Load<Texture2D>("HUD/HUD.png");
             font = Content.Load<SpriteFont>("CopperplateGothicBold");
             splashBackground = Content.Load<Texture2D>("Menu.png");
+            explosion = Content.Load<SoundEffect>("explosion.wav");
+            select = Content.Load<SoundEffect>("select.wav");
+            start = Content.Load<SoundEffect>("start.wav");
         }
 
         public void LoadTileContent()
@@ -220,7 +227,9 @@ namespace _1942
 
             if (Keyboard.GetState().IsKeyDown(Keys.F2))
             {
+                select.Play();
                 gameState = GameState.GAME;
+                start.Play();
             }
 
             /* initialise the delta timme variable off the game time */
@@ -340,7 +349,6 @@ namespace _1942
 
         public void DrawSplash()
         {
-
             spriteBatch.Draw(splashBackground, new Vector2(0, 0), Color.White);
         }
 

@@ -173,6 +173,7 @@ namespace _1942
                 if (b.IsDead == false && b.isFromPlayer == false && bounds.Intersects(b.Bounds) == true)
                 {
                     b.IsDead = true;
+                    Game1.explosion.Play();
                     lives--;
                     return true;
                 }
