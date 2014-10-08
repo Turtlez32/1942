@@ -26,6 +26,7 @@ namespace _1942
         GraphicsDeviceManager graphics;
         public static SpriteBatch spriteBatch;
         SpriteFont font;
+        Texture2D highScoreBack;
         Texture2D hud;
         Texture2D lives;
         public int levelCount;
@@ -124,6 +125,8 @@ namespace _1942
             explosion = Content.Load<SoundEffect>("explosion.wav");
             select = Content.Load<SoundEffect>("select.wav");
             start = Content.Load<SoundEffect>("start.wav");
+            highScoreBack = Content.Load<Texture2D>("Finish.png");
+
         }
 
         public void LoadTileContent()
@@ -414,12 +417,14 @@ namespace _1942
 
         public void DrawGameOver()
         {
-            spriteBatch.DrawString(font, "First Place Name:  " + firstPlaceName, new Vector2(100, 100), Color.Black);
-            spriteBatch.DrawString(font, "First Place Score: " + firstPlaceScore, new Vector2(100, 130), Color.Black);
-            spriteBatch.DrawString(font, "First Place Name:  " + secondPlaceName, new Vector2(100, 160), Color.Black);
-            spriteBatch.DrawString(font, "First Place Score: " + secondPlaceScore, new Vector2(100, 190), Color.Black);
-            spriteBatch.DrawString(font, "First Place Name:  " + thirdPlaceName, new Vector2(100, 220), Color.Black);
-            spriteBatch.DrawString(font, "First Place Score: " + thirdPlaceScore, new Vector2(100, 250), Color.Black);
+            spriteBatch.Draw(highScoreBack, new Vector2(0,0), Color.White);
+            spriteBatch.DrawString(font, "HighScore:", new Vector2(100, 200), Color.White);
+            spriteBatch.DrawString(font, "First Place Name:  " + firstPlaceName, new Vector2(100, 230), Color.White);
+            spriteBatch.DrawString(font, "First Place Score: " + firstPlaceScore, new Vector2(100, 260), Color.White);
+            spriteBatch.DrawString(font, "First Place Name:  " + secondPlaceName, new Vector2(100, 290), Color.White);
+            spriteBatch.DrawString(font, "First Place Score: " + secondPlaceScore, new Vector2(100, 320), Color.White);
+            spriteBatch.DrawString(font, "First Place Name:  " + thirdPlaceName, new Vector2(100, 350), Color.White);
+            spriteBatch.DrawString(font, "First Place Score: " + thirdPlaceScore, new Vector2(100, 380), Color.White);
 
             CheckHighScores();
         }
